@@ -29,7 +29,7 @@ def load_chroma_db():
           repo_id=HF_REPO_ID,
           repo_type="dataset",
           local_dir=LOCAL_DB_PATH,
-          token=st.secrets["HF_TOKEN"]
+          token=st.secrets["Huggingface"]
         )
         st.success("Database download complete!")
 
