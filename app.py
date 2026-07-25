@@ -6,6 +6,52 @@ from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from huggingface_hub import hf_hub_download
+from huggingface_hub import snapshot_download
+import chromadb
+
+
+# 1. Config & Paths
+HF_REPO_ID = "YOUR_USERNAME/medical-chroma-db" # Replace with your dataset repo
+LOCAL_DB_PATH = "./medical_db"
+
+# 2. Cached Database Loader
+@st.cache_resource
+def load_chroma_db():
+    """
+    Downloads the database snapshot from Hugging Face if not already present locally,
+    then initializes and returns the ChromaDB client.
+    """
+    if not os.path.exists(LOCAL_DB_PATH) or not os.listdir(LOCAL_DB_PATH):
+        st.info("Downloading vector database from Hugging Face Hub...")
+        
+        # Pulls the complete folder structure (including .sqlite3 and bin files)
+        snapshot_download(
+          repo_id=HF_REPO_ID,
+          repo_type="dataset",
+          local_dir=LOCAL_DB_PATH,
+          token=st.secrets["HF_TOKEN"]
+        )
+        st.success("Database download complete!")
+
+    # Connect persistent client to the downloaded directory
+    client = chromadb.PersistentClient(path=LOCAL_DB_PATH)
+    return client
+
+# 3. Streamlit Interface Initializer
+st.title("RAG Medical Assistance App")
+
+# Load Client
+try:
+    chroma_client = load_chroma_db()
+    # Get collection
+    collection = chroma_client.get_collection(name="medical_collection")
+    st.sidebar.success(f"Connected to DB! Collection holds {collection.count()} items.")
+except Exception as e:
+    st.error(f"Failed to load database: {e}")
+
+# Application logic continues...
+
+
 
 # --- Configuration --- #
 LLM_MODEL_NAME_OR_PATH = "TheBloke/CapybaraHermes-2.5-Mistral-7B-GGUF"
