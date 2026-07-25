@@ -4,7 +4,7 @@ import os
 from llama_cpp import Llama
 from langchain_huggingface import HuggingFaceEmbeddings
 from langchain_community.vectorstores import Chroma
-from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_text_splitters import RecursiveCharacterTextSplitter
 from huggingface_hub import hf_hub_download
 from huggingface_hub import snapshot_download
 import chromadb
