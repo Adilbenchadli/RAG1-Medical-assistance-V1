@@ -11,7 +11,7 @@ import chromadb
 
 
 # 1. Config & Paths
-HF_REPO_ID = "YOUR_USERNAME/medical-chroma-db" # Replace with your dataset repo
+HF_REPO_ID = "smflaser/medical-chroma-db" # Replace with your dataset repo
 LOCAL_DB_PATH = "./medical_db"
 
 # 2. Cached Database Loader
@@ -23,7 +23,7 @@ def load_chroma_db():
     """
     if not os.path.exists(LOCAL_DB_PATH) or not os.listdir(LOCAL_DB_PATH):
         st.info("Downloading vector database from Hugging Face Hub...")
-        
+
         # Pulls the complete folder structure (including .sqlite3 and bin files)
         snapshot_download(
           repo_id=HF_REPO_ID,
@@ -43,8 +43,8 @@ st.title("RAG Medical Assistance App")
 # Load Client
 try:
     chroma_client = load_chroma_db()
-    # Get collection
-    collection = chroma_client.get_collection(name="medical_collection")
+    # Get collection - Changed 'medical_collection' to 'langchain' (default Chroma collection name)
+    collection = chroma_client.get_collection(name="langchain")
     st.sidebar.success(f"Connected to DB! Collection holds {collection.count()} items.")
 except Exception as e:
     st.error(f"Failed to load database: {e}")
@@ -82,7 +82,7 @@ def load_embedding_model():
 # --- Load Vector Store --- #
 @st.cache_resource
 def load_vectorstore(_embedding_model): # Changed embedding_model to _embedding_model
-    return Chroma(persist_directory=VECTOR_DB_DIR, embedding_function=_embedding_model) # Changed embedding_model to _embedding_model
+    return Chroma(persist_directory=VECTOR_DB_DIR, embedding_function=_embedding_model)
 
 # --- RAG Components --- #
 llm = load_llm()
