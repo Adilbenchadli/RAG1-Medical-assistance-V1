@@ -35,8 +35,8 @@ def load_embedding_model():
 
 # --- Load Vector Store --- #
 @st.cache_resource
-def load_vectorstore(embedding_model):
-    return Chroma(persist_directory=VECTOR_DB_DIR, embedding_function=embedding_model)
+def load_vectorstore(_embedding_model): # Changed embedding_model to _embedding_model
+    return Chroma(persist_directory=VECTOR_DB_DIR, embedding_function=_embedding_model) # Changed embedding_model to _embedding_model
 
 # --- RAG Components --- #
 llm = load_llm()
