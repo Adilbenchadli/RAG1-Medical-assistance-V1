@@ -11,3 +11,4 @@ langchain-chroma
 langchain-huggingface # Added missing dependency
 chromadb==1.1.1
 sentence-transformers==2.7.0 # Aligned version with notebook installation
+chromadb
